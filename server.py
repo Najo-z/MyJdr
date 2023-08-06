@@ -7,7 +7,7 @@ import json
 from flask import request
 
 app = create_app()
-port = 5100
+port = 5000
 
 
 def error(uid: str, error: str = "db error", code: int = 400, **kwargs) -> tuple[str, int]:
@@ -263,4 +263,4 @@ def _api_dice_throw():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)
