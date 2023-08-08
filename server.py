@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from my_jdr import create_app, db
-from my_jdr.game.functions import generate_lobby_code, generate_game_code, generate_dice
+from my_jdr.game.functions import generate_lobby_code, generate_game_code, generate_rolls, generate_rolls_uid
 import sqlite3
 import json
 from flask import request
@@ -170,11 +170,11 @@ def _api_lobby_start():
         new_players['players'] = []
         game_code = generate_game_code()
         db.query_db(
-            'insert into game (uuid, players, dice, messages) values(?, ?, ?, ?)',
+            'insert into game (uuid, players, rolls, messages) values(?, ?, ?, ?)',
             (
                 str(game_code),
                 json.dumps(new_players),
-                json.dumps({'dice': []}),
+                json.dumps({'rolls': []}),
                 json.dumps({'messages': []}),
             ),
             commit=True,
@@ -203,7 +203,7 @@ def _api_game_list_one():
     return success(
         data['uid'], 'game exists',
         players=json.loads(game['players']),
-        dice=game['dice'],
+        rolls=game['rolls'],
         messages=game['messages'],
     )
 
@@ -235,7 +235,7 @@ def _api_game_join():
 @app.route('/api/dice/throw', methods=['POST'])
 def _api_dice_throw():
     data, req_error = check_request(
-        ("game_uuid", "username", "faces", "number", "uid"))
+        ("game_uuid", "username", "faces", "number", "uid", "hide"))
     if req_error:
         return req_error
     try:
@@ -247,15 +247,19 @@ def _api_dice_throw():
     if not game:
         return error(data['uid'], "game doesn't exist")
     game = dict(game)
-    dice = generate_dice(int(data['number']), int(data['faces']))
-    dice_json = json.loads(game['dice'])
-    dice_json['dice'].append({
+    number, faces = int(data['number']), int(data['faces'])
+    rolls = generate_rolls(number, faces)
+    rolls_json = json.loads(game['rolls'])
+    rolls_json['rolls'].append({
+        'uid': str(generate_rolls_uid()),
         'username': data['username'],
-        'rolls': dice
+        'rolls': rolls,
+        'formatted_dice': f'{number}d{faces}',
+        'hide': data['hide'],
     })
     try:
         db.query_db(
-            'update game set dice = ? where uuid = ?', (json.dumps(dice_json), data['game_uuid']), commit=True)
+            'update game set rolls = ? where uuid = ?', (json.dumps(rolls_json), data['game_uuid']), commit=True)
     except Exception as e:
         print(f'Request failed because: {str(e)}')
         return error(data['uid'])
@@ -263,4 +267,4 @@ def _api_dice_throw():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)

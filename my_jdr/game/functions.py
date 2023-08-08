@@ -15,6 +15,10 @@ def generate_game_code():
     return uuid.uuid4()
 
 
-def generate_dice(number: int = 1, faces: tuple[int] = 10) -> list[int]:
+def generate_rolls_uid():
+    return uuid.uuid4()
+
+
+def generate_rolls(number: int = 1, faces: tuple[int] = 10) -> list[int]:
     r = [random.randint(0, faces-1) for _ in range(number)]
     return r

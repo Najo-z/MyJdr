@@ -28,6 +28,6 @@ CREATE TABLE lobby (
 CREATE TABLE game (
   uuid TEXT NOT NULL,
   players TEXT NOT NULL,
-  dice TEXT NOT NULL,
+  rolls TEXT NOT NULL,
   messages TEXT NOT NULL
 );
