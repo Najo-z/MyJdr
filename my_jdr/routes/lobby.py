@@ -4,8 +4,7 @@ from flask import Blueprint
 import sqlite3
 from .. import db
 import json
-from ..game.functions import generate_game_code, generate_lobby_code
-from .util import error, success, check_request
+from .util import error, success, check_request, generate_lobby_code, generate_game_code
 
 router = Blueprint('lobby', __name__)
 

@@ -3,8 +3,7 @@
 from flask import Blueprint
 from .. import db
 import json
-from ..game.functions import generate_rolls, generate_rolls_uid
-from .util import error, success, check_request
+from .util import error, success, check_request, generate_rolls, generate_rolls_uid
 
 router = Blueprint('dice', __name__)
 

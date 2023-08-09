@@ -3,7 +3,6 @@
 from flask import Blueprint
 from .. import db
 import sqlite3
-from ..game.functions import generate_rolls, generate_rolls_uid
 from .util import error, success, check_request
 
 router = Blueprint('user', __name__)
