@@ -2,13 +2,17 @@ import os
 
 from flask import Flask
 from . import db
+from .routes import lobby, game, dice, user
 import logging
-import click
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    app.register_blueprint(lobby.router)
+    app.register_blueprint(game.router)
+    app.register_blueprint(dice.router)
+    app.register_blueprint(user.router)
     log = logging.getLogger('werkzeug')
     # log.setLevel(logging.WARNING)
     app.config.from_mapping(
